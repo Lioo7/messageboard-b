@@ -1,69 +1,48 @@
 #include "Board.hpp"
 #include <iostream>
-#include <climits>
 
 using namespace std;
 const char blank_cell = '_';
-uint min_row = UINT_MAX;
-uint max_row = 1;
-uint min_col = UINT_MAX;
-uint max_col = 1;
 
 namespace ariel
 {
-    // This function increase the size of the board
-    void Board::boardResize(uint row, uint col)
-    {
-        max_row = max(max_row, row);
-        max_col = max(max_col, col);
-
-        this->rows = max_row + 1;
-        this->columns = max_col + 1;
-        this->board.resize(rows); // increases the rows
-
-        for (uint i = 0; i < rows; i++)
-        {
-            // increases the columns of each row and initialize with blank cell
-            board[i].resize(columns, blank_cell);
-        }
-    }
-
     // This function post a new post in the board
     void Board::post(uint row, uint col, Direction direction, string text)
     {
-        min_row = min(min_row, row);
-        min_col = min(min_col, col);
-
         uint length = text.length();
-        if(length > 0){
+        if (length > 0)
+        {
             empty = false;
+        }
+
+        else
+        {
+            return;
         }
 
         if (direction == Direction::Horizontal)
         {
-            if ((col + length > max_col) || row > max_row)
-            {
-                boardResize(row, col + length);
-                // cout << board.size() << endl;
-                // cout << board[1].size() << endl;
-            }
+            this->min_row = min(min_row, row);
+            this->min_col = min(min_col, col);
+            this->max_row = max(max_row, row);
+            this->max_col = max(max_col, col + length);
+
             for (uint i = 0; i < length; i++)
             {
-                this->board[row][col + i] = text[i];
+                this->board[row][col + i] = text.at(i);
             }
         }
 
         else
         {
-            if ((col > max_col) || row + length > max_row)
-            {
-                boardResize(row + length, col);
-                // cout << board.size() << endl;
-                // cout << board[1].size() << endl;
-            }
+            this->min_row = min(min_row, row);
+            this->min_col = min(min_col, col);
+            this->max_row = max(max_row, row + length);
+            this->max_col = max(max_col, col);
+
             for (uint i = 0; i < length; i++)
             {
-                this->board[row + i][col] = text[i];
+                this->board[row + i][col] = text.at(i);
             }
         }
     }
@@ -87,10 +66,11 @@ namespace ariel
             {
                 for (uint i = 0; i < length; i++)
                 {
-                    if ((col + i > max_col) || (row > max_row))
+                    if (board[row][col + i] == 0)
                     {
                         ans += blank_cell;
                     }
+
                     else
                     {
                         ans += board[row][col + i];
@@ -102,10 +82,11 @@ namespace ariel
 
                 for (uint i = 0; i < length; i++)
                 {
-                    if ((col > max_col) || (row + i > max_row))
+                    if (board[row + i][col] == 0)
                     {
                         ans += blank_cell;
                     }
+
                     else
                     {
                         ans += board[row + i][col];
@@ -120,14 +101,25 @@ namespace ariel
     // This function print the board
     void Board::show()
     {
-        for (uint i = min_row; i < max_row; i++)
+        for (uint i = min_row-1; i < max_row; i++)
         {
             for (uint j = min_col; j < max_col; j++)
             {
-                cout << this->board[i][j];
+                if (board[i][j] != 0)
+                {
+                    cout << board[i][j];
+                }
+                else
+                {
+                    cout << '_';
+                }
             }
             cout << "\n";
         }
-        // cout << "DONE";
+
+        // cout << "min_row: " << min_row << "\n";
+        // cout << "max_row: " << max_row << "\n";
+        // cout << "min_col: " << min_col << "\n";
+        // cout << "max_col: " << max_col << "\n";
     }
 }
