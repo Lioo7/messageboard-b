@@ -35,7 +35,9 @@ namespace ariel
         min_col = min(min_col, col);
 
         uint length = text.length();
-        if(length > 0) empty = false;
+        if(length > 0){
+            empty = false;
+        }
 
         if (direction == Direction::Horizontal)
         {
