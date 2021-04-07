@@ -35,6 +35,8 @@ namespace ariel
         min_col = min(min_col, col);
 
         uint length = text.length();
+        if(length > 0) empty = false;
+
         if (direction == Direction::Horizontal)
         {
             if ((col + length > max_col) || row > max_row)
@@ -67,33 +69,45 @@ namespace ariel
     // This function read a message from the board
     string Board::read(uint row, uint col, Direction direction, uint length)
     {
-        string ans = "";
-        if (direction == Direction::Horizontal)
+        string ans;
+
+        if (empty)
         {
-            for (uint i = 0; i < length; i++)
+            for (int i = 0; i < length; i++)
             {
-                if ((col + i > max_col) || (row > max_row))
-                {
-                    ans += blank_cell;
-                }
-                else
-                {
-                    ans += board[row][col + i];
-                }
+                ans += blank_cell;
             }
         }
+
         else
         {
-
-            for (uint i = 0; i < length; i++)
+            if (direction == Direction::Horizontal)
             {
-                if ((col > max_col) || (row + i > max_row))
+                for (uint i = 0; i < length; i++)
                 {
-                    ans += blank_cell;
+                    if ((col + i > max_col) || (row > max_row))
+                    {
+                        ans += blank_cell;
+                    }
+                    else
+                    {
+                        ans += board[row][col + i];
+                    }
                 }
-                else
+            }
+            else
+            {
+
+                for (uint i = 0; i < length; i++)
                 {
-                    ans += board[row + i][col];
+                    if ((col > max_col) || (row + i > max_row))
+                    {
+                        ans += blank_cell;
+                    }
+                    else
+                    {
+                        ans += board[row + i][col];
+                    }
                 }
             }
         }
@@ -104,8 +118,6 @@ namespace ariel
     // This function print the board
     void Board::show()
     {
-        // cout << min_row << endl;
-        // cout << min_col << endl;
         for (uint i = min_row; i < max_row; i++)
         {
             for (uint j = min_col; j < max_col; j++)
@@ -114,5 +126,6 @@ namespace ariel
             }
             cout << "\n";
         }
+        // cout << "DONE";
     }
 }
